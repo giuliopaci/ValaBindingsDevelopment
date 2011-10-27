@@ -1,4 +1,4 @@
-/* valac example.vala --pkg libmicrohttpd --vapidir . --save-temps */
+/* valac --pkg libmicrohttpd --vapidir vapi --save-temps */
 using MHD;
 int print_out_key(void* cls, MHD.ValueKind kind, string? key, string? value)
 {
@@ -15,7 +15,7 @@ int MyAccessHandler (void* cls, MHD.Connection connection, string url, string me
 	}
 	string username;
 	string password;
-	username = connection.basic_auth_get_username_password(ref password);
+//	username = connection.basic_auth_get_username_password(ref password);
 
 	MHD.Response response;
 	stderr.printf("%s request for %s using version %s\n", method, url, version);
