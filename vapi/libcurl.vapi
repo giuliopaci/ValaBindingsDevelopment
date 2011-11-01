@@ -1,18 +1,5 @@
 [CCode (cheader_filename = "curl/curl.h")]
 namespace Curl {
-	[CCode (cname = "CURL_GLOBAL_SSL")]
-	public const long GLOBAL_SSL;
-	[CCode (cname = "CURL_GLOBAL_WIN32")]
-	public const long GLOBAL_WIN32;
-	[CCode (cname = "CURL_GLOBAL_ALL")]
-	public const long GLOBAL_ALL;
-	[CCode (cname = "CURL_GLOBAL_NOTHING")]
-	public const long GLOBAL_NOTHING;
-	[CCode (cname = "CURL_GLOBAL_DEFAULT")]
-	public const int GLOBAL_DEFAULT;
-	public Curl.Code global_init (long flags);
-	public Curl.Code global_init_mem (long flags, Curl.MallocCallback m, Curl.FreeCallback f, Curl.ReallocCallback r, Curl.StrdupCallback s, Curl.CallocCallback c);
-	public static void global_cleanup ();
 	[CCode (cname = "CURL", cprefix = "curl_easy_", unref_function = "curl_easy_cleanup")]
 	public class EasyHandle {
 		[CCode (cname = "curl_easy_init")]
@@ -28,6 +15,56 @@ namespace Curl {
 		public Curl.Code send (void *buffer, size_t buflen, out size_t n);
 		public string escape (string @string, int length);
 		public string unescape (string @string, int length, out int outlength);
+	}
+	[CCode (name = "CURLINFO", cprefix = "CURLINFO_")]
+	public enum Info {
+		EFFECTIVE_URL,
+		RESPONSE_CODE,
+		TOTAL_TIME,
+		NAMELOOKUP_TIME,
+		CONNECT_TIME,
+		PRETRANSFER_TIME,
+		SIZE_UPLOAD,
+		SIZE_DOWNLOAD,
+		SPEED_DOWNLOAD,
+		SPEED_UPLOAD,
+		HEADER_SIZE,
+		REQUEST_SIZE,
+		SSL_VERIFYRESULT,
+		FILETIME,
+		CONTENT_LENGTH_DOWNLOAD,
+		CONTENT_LENGTH_UPLOAD,
+		STARTTRANSFER_TIME,
+		CONTENT_TYPE,
+		REDIRECT_TIME,
+		REDIRECT_COUNT,
+		PRIVATE,
+		HTTP_CONNECTCODE,
+		HTTPAUTH_AVAIL,
+		PROXYAUTH_AVAIL,
+		OS_ERRNO,
+		NUM_CONNECTS,
+		SSL_ENGINES,
+		COOKIELIST,
+		LASTSOCKET,
+		FTP_ENTRY_PATH,
+		REDIRECT_URL,
+		PRIMARY_IP,
+		APPCONNECT_TIME,
+		CERTINFO,
+		CONDITION_UNMET,
+		RTSP_SESSION_ID,
+		RTSP_CLIENT_CSEQ,
+		RTSP_SERVER_CSEQ,
+		RTSP_CSEQ_RECV,
+		PRIMARY_PORT,
+		LOCAL_IP,
+		LOCAL_PORT,
+		LASTONE,
+		STRING,
+		LONG,
+		DOUBLE,
+		SLIST
 	}
 	[CCode (cname = "CURLcode", cprefix = "CURLE_")]
 	public enum Code {
@@ -115,8 +152,6 @@ namespace Curl {
 		PROXYUSERPWD,
 		RANGE,
 		INFILE,
-		WRITEDATA,
-		READDATA,
 		ERRORBUFFER,
 		WRITEFUNCTION,
 		READFUNCTION,
@@ -131,13 +166,12 @@ namespace Curl {
 		RESUME_FROM,
 		COOKIE,
 		HTTPHEADER,
-		HTTPPOST,	// struct HTTPPost
+		HTTPPOST,
 		SSLCERT,
 		KEYPASSWD,
 		CRLF,
 		QUOTE,
 		WRITEHEADER,
-		HEADERDATA,
 		COOKIEFILE,
 		SSLVERSION,
 		TIMECONDITION,
@@ -201,8 +235,8 @@ namespace Curl {
 		BUFFERSIZE,
 		NOSIGNAL,
 		SHARE,
-		PROXYTYPE ,
-		ENCODING,
+		PROXYTYPE,
+		ACCEPT_ENCODING,
 		PRIVATE,
 		HTTP200ALIASES,
 		UNRESTRICTED_AUTH,
@@ -277,63 +311,75 @@ namespace Curl {
 		SSH_KNOWNHOSTS,
 		SSH_KEYFUNCTION,
 		SSH_KEYDATA,
-		LASTENTRY
+		MAIL_FROM,
+		MAIL_RCPT,
+		FTP_USE_PRET,
+		RTSP_REQUEST,
+		RTSP_SESSION_ID,
+		RTSP_STREAM_URI,
+		RTSP_TRANSPORT,
+		RTSP_CLIENT_CSEQ,
+		RTSP_SERVER_CSEQ,
+		INTERLEAVEDATA,
+		INTERLEAVEFUNCTION,
+		WILDCARDMATCH,
+		CHUNK_BGN_FUNCTION,
+		CHUNK_END_FUNCTION,
+		FNMATCH_FUNCTION,
+		CHUNK_DATA,
+		FNMATCH_DATA,
+		RESOLVE,
+		TLSAUTH_USERNAME,
+		TLSAUTH_PASSWORD,
+		TLSAUTH_TYPE,
+		TRANSFER_ENCODING,
+		CLOSESOCKETFUNCTION,
+		CLOSESOCKETDATA,
+		LASTENTRY,
+		WRITEDATA,
+		READDATA,
+		HEADERDATA,
+		ENCODING
 	}
-	[CCode (name = "CURLINFO", cprefix = "CURLINFO_")]
-	public enum Info {
-		STRING,
-		LONG,
-		DOUBLE,
-		SLIST,
-		EFFECTIVE_URL,
-		RESPONSE_CODE,
-		TOTAL_TIME,
-		NAMELOOKUP_TIME,
-		CONNECT_TIME,
-		PRETRANSFER_TIME,
-		SIZE_UPLOAD,
-		SIZE_DOWNLOAD,
-		SPEED_DOWNLOAD,
-		SPEED_UPLOAD,
-		HEADER_SIZE,
-		REQUEST_SIZE,
-		SSL_VERIFYRESULT,
-		FILETIME,
-		CONTENT_LENGTH_DOWNLOAD,
-		CONTENT_LENGTH_UPLOAD,
-		STARTTRANSFER_TIME,
-		CONTENT_TYPE,
-		REDIRECT_TIME,
-		REDIRECT_COUNT,
-		PRIVATE,
-		HTTP_CONNECTCODE,
-		HTTPAUTH_AVAIL,
-		PROXYAUTH_AVAIL,
-		OS_ERRNO,
-		NUM_CONNECTS,
-		SSL_ENGINES,
-		COOKIELIST,
-		LASTSOCKET,
-		FTP_ENTRY_PATH,
-		REDIRECT_URL,
-		PRIMARY_IP,
-		APPCONNECT_TIME,
-		CERTINFO,
-		CONDITION_UNMET,
-		LASTONE
+	[CCode (cname = "curliocmd", cprefix = "CURLIOCMD_")]
+	public enum IOCmd {
+		NOP,
+		RESTARTREAD,
+		LAST
 	}
+	[CCode (cname = "curlioerr", cprefix = "CURLIOE_")]
+	public enum IOError {
+		OK,
+		UNKNOWNCMD,
+		FAILRESTART,
+		LAST
+	}
+	[CCode (cname = "curlsocktype", cprefix = "CURLSOCKTYPE_")]
+	public enum SocketType {
+		IPCXN,
+		LAST
+	}
+	[CCode (cname = "CURL_GLOBAL_SSL")]
+	public const long GLOBAL_SSL;
+	[CCode (cname = "CURL_GLOBAL_WIN32")]
+	public const long GLOBAL_WIN32;
+	[CCode (cname = "CURL_GLOBAL_ALL")]
+	public const long GLOBAL_ALL;
+	[CCode (cname = "CURL_GLOBAL_NOTHING")]
+	public const long GLOBAL_NOTHING;
+	[CCode (cname = "CURL_GLOBAL_DEFAULT")]
+	public const int GLOBAL_DEFAULT;
+	public Curl.Code global_init (long flags);
+	public Curl.Code global_init_mem (long flags, Curl.MallocCallback m, Curl.FreeCallback f, Curl.ReallocCallback r, Curl.StrdupCallback s, Curl.CallocCallback c);
+	public static void global_cleanup ();
+//	[CCode (cname = "curl_sockopt_callback")]
+//	public delegate size_t SockoptCallback (void* clientp, Curl.Socket curlfd, Curl.SocketType purpose);
 	[CCode (cname = "curl_progress_callback")]
 	public delegate int ProgressCallback (void* clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 	[CCode (cname = "CURL_WRITEFUNC_PAUSE")]
 	public const size_t WRITEFUNC_PAUSE;
 	[CCode (cname = "curl_write_callback")]
 	public delegate size_t WriteCallback (char* buffer, size_t size, size_t nitems, void *outstream);
-	[CCode (cname = "CURL_SEEKFUNC_OK")]
-	public const int SEEKFUNC_OK;
-	[CCode (cname = "CURL_SEEKFUNC_FAIL")]
-	public const int SEEKFUNC_FAIL;
-	[CCode (cname = "CURL_SEEKFUNC_CANTSEEK")]
-	public const int SEEKFUNC_CANTSEEK;
 	// [Ccode (cname = "curl_seek_callback")]
 	// public delegate int SeekCallback (void* instream, Curl.Offset offset, int origin);
 	[CCode (cname = "CURL_READFUNC_ABORT")]
@@ -342,26 +388,6 @@ namespace Curl {
 	public const size_t READFUNC_PAUSE;
 	[CCode (cname = "curl_read_callback")]
 	public delegate size_t ReadCallback (char* buffer, size_t size, size_t nitems, void *instream);
-	[CCode (cname = "curlsocktype", cprefix = "CURLSOCKTYPE_")]
-	public enum SocketType {
-		IPCXN,
-		LAST
-	}
-//	[CCode (cname = "curl_sockopt_callback")]
-//	public delegate size_t SockoptCallback (void* clientp, Curl.Socket curlfd, Curl.SocketType purpose);
-	[CCode (cname = "curlioerr", cprefix = "CURLIOE_")]
-	public enum IOError {
-		OK,
-		UNKNOWNCMD,
-		FAILRESTART,
-		LAST
-	}
-	[CCode (cname = "curliocmd", cprefix = "CURLIOCMD_")]
-	public enum IOCmd {
-		NOP,
-		RESTARTREAD,
-		LAST
-	}
 	[CCode (cname = "curl_ioctl_callback")]
 	public delegate Curl.IOError IoctlCallback (Curl.EasyHandle handle, int cmd, void* clientp);
 	[CCode (cname = "curl_malloc_callback")]
@@ -374,4 +400,10 @@ namespace Curl {
 	public delegate void* CallocCallback (size_t size);
 	[CCode (cname = "curl_strdup_callback")]
 	public delegate void* StrdupCallback (string orig);
+	[CCode (cname = "CURL_SEEKFUNC_CANTSEEK")]
+	public const int SEEKFUNC_CANTSEEK;
+	[CCode (cname = "CURL_SEEKFUNC_FAIL")]
+	public const int SEEKFUNC_FAIL;
+	[CCode (cname = "CURL_SEEKFUNC_OK")]
+	public const int SEEKFUNC_OK;
 }
