@@ -1,0 +1,2 @@
+MHD_* cprefix="MHD_" lower_case_cprefix="mhd_" cheader_filename="microhttpd.h"
+
