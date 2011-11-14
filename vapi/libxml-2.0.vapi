@@ -946,7 +946,7 @@ namespace Xml {
 	public int registerInputCallbacks (InputMatchCallback matchFunc, InputOpenCallback openFunc, InputReadCallback readFunc, InputCloseCallback closeFunc);
 
 	[CCode (cname = "xmlRegisterOutputCallbacks", cheader_filename = "libxml/xmlIO.h")]
-	public int registerOutputCallbacks(OutputMatchCallback matchFunc, OutputOpenCallback openFunc, OutputWriteCallback writeFunc, OutputCloseCallback closeFunc);buffer
+	public int registerOutputCallbacks(OutputMatchCallback matchFunc, OutputOpenCallback openFunc, OutputWriteCallback writeFunc, OutputCloseCallback closeFunc);
 
 
 /*
@@ -1699,42 +1699,197 @@ void	xmlNodeDumpOutput		(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, 
 
 // typedef struct _xmlSchemaSAXPlug xmlSchemaSAXPlugStruct;
 // typedef xmlSchemaSAXPlugStruct * xmlSchemaSAXPlugPtr;
-
-// typedef enum xmlSchemaValidOption;
-// typedef enum xmlSchemaValidError;
 // int	xmlSchemaSAXUnplug		(xmlSchemaSAXPlugPtr plug);
 
+	[CCode (cname = "xmlSchemaValidOption", cprefix = "XML_SCHEMA_VAL_", cheader_filename = "libxml/xmlschemas.h")]
+	public enum SchemaValidOption {
+		VC_I_CREATE = 1 /*  Default/fixed: create an attribute node * or an element's text node on the instance. * */
+	}
 
+	[CCode (cname = "xmlSchemaValidError", cprefix = "XML_SCHEMAS_ERR_", cheader_filename = "libxml/xmlschemas.h")]
+	public enum SchemaValidError {
+		OK = 0,
+		NOROOT = 1,
+		UNDECLAREDELEM = 2,
+		NOTTOPLEVEL = 3,
+		MISSING = 4,
+		WRONGELEM = 5,
+		NOTYPE = 6,
+		NOROLLBACK = 7,
+		ISABSTRACT = 8,
+		NOTEMPTY = 9,
+		ELEMCONT = 10,
+		HAVEDEFAULT = 11,
+		NOTNILLABLE = 12,
+		EXTRACONTENT = 13,
+		INVALIDATTR = 14,
+		INVALIDELEM = 15,
+		NOTDETERMINIST = 16,
+		CONSTRUCT = 17,
+		INTERNAL = 18,
+		NOTSIMPLE = 19,
+		ATTRUNKNOWN = 20,
+		ATTRINVALID = 21,
+		VALUE = 22,
+		FACET = 23,
+		[CCode (cname = "XML_SCHEMAS_ERR_")]
+		ERR = 24,
+		XXX = 25
+}
+
+	[CCode (cname = "xmlDict", cheader_filename = "libxml/hash.h")]
+	public class Dict {
+	}
+
+	[CCode (has_target = false, cname = "xmlHashCopier", cheader_filename = "libxml/hash.h")]
+	public delegate void* HashCopier			(void* payload, string name);
+	[CCode (has_target = false, cname = "xmlHashScannerFull", cheader_filename = "libxml/hash.h")]
+	public delegate void HashScannerFull		(void* payload, void* data, string name, string name2, string name3);
+	[CCode (has_target = false, cname = "xmlHashScanner", cheader_filename = "libxml/hash.h")]
+	public delegate void HashScanner			(void* payload, void* data, string name);
+	[CCode (has_target = false, cname = "xmlHashDeallocato", cheader_filename = "libxml/hash.h")]
+	public delegate void HashDeallocator		(void* payload, string name);
+
+
+	[CCode (cname = "xmlHashTable", cheader_filename = "libxml/hash.h")]
+	public class HashTable {
+		[CCode (cname = "xmlHashCreate")]
+		public HashTable(int size);
+		[CCode (cname = "xmlHashCreateDict")]
+		public HashTable.with_dict(int size, Dict dict);
+		[CCode (cname = "xmlHashCopy")]
+		public HashTable copy(HashCopier f);
+		[CCode (cname = "xmlHashScan")]
+		public void scan(HashScanner f, void* data);
+		[CCode (cname = "xmlHashScan3")]
+		public void scan3(string name, string name2, string name3, HashScanner f, void* data);
+		[CCode (cname = "xmlHashScanFull")]
+		public void scan_full(HashScannerFull f, void* data);
+		[CCode (cname = "xmlHashScanFull3")]
+		public void scan_full3(string name, string name2, string name3, HashScannerFull f, void* data);
+		[CCode (cname = "xmlHashAddEntry")]
+		public int add(string name, void* userdata);
+		[CCode (cname = "xmlHashAddEntry2")]
+		public int add2(string name, string name2, void* userdata);
+		[CCode (cname = "xmlHashAddEntry3")]
+		public int add3(string name, string name2, string name3, void* userdata);
+		[CCode (cname = "xmlHashUpdateEntry")]
+		public int update(string name, void* userdata, HashDeallocator f);
+		[CCode (cname = "xmlHashUpdateEntry2")]
+		public int update2(string name, string name2, void* userdata, HashDeallocator f);
+		[CCode (cname = "xmlHashUpdateEntry3")]
+		public int update3(string name, string name2, string name3, void* userdata, HashDeallocator f);
+		[CCode (cname = "xmlHashQLookup")]
+		public void* q_lookup(string prefix, string name);
+		[CCode (cname = "xmlHashQLookup2")]
+		public void* q_lookup2(string prefix, string name, string prefix2, string name2);
+		[CCode (cname = "xmlHashQLookup3")]
+		public void* q_lookup3(string prefix, string name, string prefix2, string name2, string prefix3, string name3);
+		[CCode (cname = "xmlHashLookup")]		
+		public void* lookup(string name);
+		[CCode (cname = "xmlHashLookup2")]		
+		public void* lookup2(string name, string name2);
+		[CCode (cname = "xmlHashLookup3")]		
+		public void* lookup3(string name, string name2, string name3);
+		[CCode (cname = "xmlHashRemoveEntry")]
+		public int remove(string name, HashDeallocator f);
+		[CCode (cname = "xmlHashRemoveEntry2")]
+		public int remove2(string name, string name2, HashDeallocator f);
+		[CCode (cname = "xmlHashRemoveEntry3")]
+		public int remove3(string name, string name2, string name3, HashDeallocator f);
+		[CCode (cname = "xmlHashFree")]
+		public void free(HashDeallocator f);
+		[CCode (cname = "xmlHashsize")]
+		public int size();
+	}
 
 	[CCode (has_target = false, cname = "xmlSchemaValidityErrorFunc", cheader_filename = "libxml/xmlschemas.h")]
 	public delegate int SchemaValidityErrorFunc (void* context, string msg, ...);
 	[CCode (has_target = false, cname = "xmlSchemaValidityWarningFunc", cheader_filename = "libxml/xmlschemas.h")]
 	public delegate int SchemaValidityWarningFunc (void* context, string msg, ...);
 
+	[CCode (cname = "xmlSchemaTypeType", cprefix = "XML_SCHEMA_TYPE_", cheader_filename = "libxml/schemasInternals.h")]
+	public enum SchemaType {
+		BASIC = 1, /* A built-in datatype */
+		ANY = 2,
+		FACET = 3,
+		SIMPLE = 4,
+		COMPLEX = 5,
+		SEQUENCE = 6,
+		CHOICE = 7,
+		ALL = 8,
+		SIMPLE_CONTENT = 9,
+		COMPLEX_CONTENT = 10,
+		UR = 11,
+		RESTRICTION = 12,
+		EXTENSION = 13,
+		ELEMENT = 14,
+		ATTRIBUTE = 15,
+		ATTRIBUTEGROUP = 16,
+		GROUP = 17,
+		NOTATION = 18,
+		LIST = 19,
+		UNION = 20,
+		ANY_ATTRIBUTE = 21,
+		IDC_UNIQUE = 22,
+		IDC_KEY = 23,
+		IDC_KEYREF = 24,
+		PARTICLE = 25,
+		ATTRIBUTE_USE = 26,
+		[CCode( cname = "XML_SCHEMA_FACET_MININCLUSIVE" )]
+		FACET_MININCLUSIVE = 1000,
+		[CCode( cname = "XML_SCHEMA_FACET_MINEXCLUSIVE" )]
+		FACET_MINEXCLUSIVE = 1001,
+		[CCode( cname = "XML_SCHEMA_FACET_MAXINCLUSIVE" )]
+		FACET_MAXINCLUSIVE = 1002,
+		[CCode( cname = "XML_SCHEMA_FACET_MAXEXCLUSIVE" )]
+		FACET_MAXEXCLUSIVE = 1003,
+		[CCode( cname = "XML_SCHEMA_FACET_TOTALDIGITS" )]
+		FACET_TOTALDIGITS = 1004,
+		[CCode( cname = "XML_SCHEMA_FACET_FRACTIONDIGITS" )]
+		FACET_FRACTIONDIGITS = 1005,
+		[CCode( cname = "XML_SCHEMA_FACET_PATTERN" )]
+		FACET_PATTERN = 1006,
+		[CCode( cname = "XML_SCHEMA_FACET_ENUMERATION" )]
+		FACET_ENUMERATION = 1007,
+		[CCode( cname = "XML_SCHEMA_FACET_WHITESPACE" )]
+		FACET_WHITESPACE = 1008,
+		[CCode( cname = "XML_SCHEMA_FACET_LENGTH" )]
+		FACET_LENGTH = 1009,
+		[CCode( cname = "XML_SCHEMA_FACET_MAXLENGTH" )]
+		FACET_MAXLENGTH = 1010,
+		[CCode( cname = "XML_SCHEMA_FACET_MINLENGTH" )]
+		FACET_MINLENGTH = 1011,
+		[CCode( cname = "XML_SCHEMA_EXTRA_QNAMEREF" )]
+		EXTRA_QNAMEREF = 2000,
+		[CCode( cname = "XML_SCHEMA_EXTRA_ATTR_USE_PROHIB" )]
+		EXTRA_ATTR_USE_PROHIB = 2001
+}
+
 
 	[Compact]
-	[CCode (cname = "xmlSchema", free_function = "xmlSchemaFree", cheader_filename = "libxml/xmlschemas.h")]
+	[CCode (cname = "xmlSchema", free_function = "xmlSchemaFree", cheader_filename = "libxml/schemasInternals.h")]
 	public class Schema {
 		public string name;
 		public string targetNamespace;
 		public string version;
-		public string id;
+		// public string id; //Obsoleted
 		public Xml.Doc doc;
-		// xmlSchemaAnnotPtr	annot
+		//xmlSchemaAnnotPtr	annot
 		public int	flags;
-		// xmlHashTablePtr	typeDecl
-		// xmlHashTablePtr	attrDecl
-		// xmlHashTablePtr	attrgrpDecl
-		// xmlHashTablePtr	elemDecl
-		// xmlHashTablePtr	notaDecl
-		// xmlHashTablePtr	schemasImports
+		public HashTable	  typeDecl;
+		public HashTable	  attrDecl;
+		public HashTable	  attrgrpDecl;
+		public HashTable	  elemDecl;
+		public HashTable	  notaDecl;
+		public HashTable	  schemasImports;
 		// void *	_private	: unused by the library for users or bindings
-		// xmlHashTablePtr	groupDecl
-		// xmlDictPtr	dict
+		public HashTable groupDecl;
+		public Dict dict;
 		// void *	includes	: the includes, this is opaque for now
 		public int	preserve;
 		public int	counter;
-		// xmlHashTablePtr	idcDef	: All identity-constraint defs.
+		public HashTable idcDef;//	: All identity-constraint defs.
 		// void *	volatiles	: Obsolete
 		[CCode (cname = "xmlSchemaDump", instance_pos = -1)]
 		#if POSIX
