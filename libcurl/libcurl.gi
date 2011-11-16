@@ -570,6 +570,13 @@
       <member name="CURLKHSTAT_LAST" value="4"/>
     </enum>
 
+    <enum name="keytype">
+      <member name="CURLKHTYPE_UNKNOWN" value="0"/>
+      <member name="CURLKHTYPE_RSA1" value="1"/>
+      <member name="CURLKHTYPE_RSA" value="2"/>
+      <member name="CURLKHTYPE_DSS" value="3"/>
+    </enum>
+
     <enum name="CURLFORMcode">
       <member name="CURL_FORMADD_OK" value="0"/>
       <member name="CURL_FORMADD_MEMORY" value="1"/>
@@ -987,6 +994,7 @@
       <member name="CURLVERSION_SECOND" value="1"/>
       <member name="CURLVERSION_THIRD" value="2"/>
       <member name="CURLVERSION_FOURTH" value="3"/>
+      <member name="CURLVERSION_NOW" value="3"/>
       <member name="CURLVERSION_LAST" value="4"/>
     </enum>
     <enum name="curl_TimeCond">
@@ -1102,6 +1110,47 @@
     <enum name="curlsocktype">
       <member name="CURLSOCKTYPE_IPCXN" value="0"/>
       <member name="CURLSOCKTYPE_LAST" value="1"/>
+    </enum>
+    <enum name="httpversion">
+      <member name="CURL_HTTP_VERION_1_0" value="0"/>
+      <member name="CURL_HTTP_VERION_1_1" value="1"/>
+      <member name="CURL_HTTP_VERION_LAST" value="2"/>
+    </enum>
+    <enum name="rtspreq">
+      <member name="CURL_RTSPREQ_NONE" value="0"/>
+      <member name="CURL_RTSPREQ_OPTIONS" value="1"/>
+      <member name="CURL_RTSPREQ_DESCRIBE" value="2"/>
+      <member name="CURL_RTSPREQ_ANNOUNCE" value="3"/>
+      <member name="CURL_RTSPREQ_SETUP" value="4"/>
+      <member name="CURL_RTSPREQ_PLAY" value="5"/>
+      <member name="CURL_RTSPREQ_PAUSE" value="6"/>
+      <member name="CURL_RTSPREQ_TEARDOWN" value="7"/>
+      <member name="CURL_RTSPREQ_GET_PARAMETER" value="8"/>
+      <member name="CURL_RTSPREQ_SET_PARAMETER" value="9"/>
+      <member name="CURL_RTSPREQ_RECORD" value="10"/>
+      <member name="CURL_RTSPREQ_RECEIVE" value="11"/>
+      <member name="CURL_RTSPREQ_LAST" value="12"/>
+    </enum>
+
+    <enum name="CURL_NETRC_OPTION">
+      <member name="CURL_NETRC_IGNORED" value="0"/>
+      <member name="CURL_NETRC_OPTIONAL" value="1"/>
+      <member name="CURL_NETRC_REQUIRED" value="2"/>
+      <member name="CURL_NETRC_LAST" value="3"/>
+    </enum>
+
+    <enum name="sslversion">
+      <member name="CURL_SSLVERSION_DEFAULT" value="0"/>
+      <member name="CURL_SSLVERSION_TLSv1" value="1"/>
+      <member name="CURL_SSLVERSION_SSLv2" value="2"/>
+      <member name="CURL_SSLVERSION_SSLv3" value="3"/>
+      <member name="CURL_SSLVERSION_LAST" value="4"/>
+    </enum>
+
+    <enum name="CURL_TLSAUTH">
+      <member name="CURL_TLSAUTH_NONE" value="0"/>
+      <member name="CURL_TLSAUTH_SRP" value="1"/>
+      <member name="CURL_TLSAUTH_LAST" value="2"/>
     </enum>
     <constant name="CURLAUTH_ANYSAFE" type="int" value="-1"/>
     <constant name="CURLAUTH_BASIC" type="int" value="1"/>
