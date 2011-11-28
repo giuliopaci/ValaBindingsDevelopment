@@ -297,27 +297,6 @@
 	  <parameter name="length" type="int"/>
 	</parameters>
       </method>
-      <method name="formadd" symbol="curl_formadd">
-	<return-type type="CURLFORMcode"/>
-	<parameters>
-	  <parameter name="httppost" type="struct curl_httppost**"/>
-	  <parameter name="last_post" type="struct curl_httppost**"/>
-	</parameters>
-      </method>
-      <method name="formfree" symbol="curl_formfree">
-	<return-type type="void"/>
-	<parameters>
-	  <parameter name="form" type="struct curl_httppost*"/>
-	</parameters>
-      </method>
-      <method name="formget" symbol="curl_formget">
-	<return-type type="int"/>
-	<parameters>
-	  <parameter name="form" type="struct curl_httppost*"/>
-	  <parameter name="arg" type="void*"/>
-	  <parameter name="append" type="curl_formget_callback"/>
-	</parameters>
-      </method>
       <method name="free" symbol="curl_free">
 	<return-type type="void"/>
 	<parameters>
@@ -335,6 +314,37 @@
 	<return-type type="char*"/>
 	<parameters>
 	  <parameter name="variable" type="char*"/>
+	</parameters>
+      </method>
+      <method name="strequal" symbol="curl_strequal">
+	<return-type type="int"/>
+	<parameters>
+	  <parameter name="s1" type="char*"/>
+	  <parameter name="s2" type="char*"/>
+	</parameters>
+      </method>
+      <method name="strnequal" symbol="curl_strnequal">
+	<return-type type="int"/>
+	<parameters>
+	  <parameter name="s1" type="char*"/>
+	  <parameter name="s2" type="char*"/>
+	  <parameter name="n" type="size_t"/>
+	</parameters>
+      </method>
+      <method name="unescape" symbol="curl_unescape">
+	<return-type type="char*"/>
+	<parameters>
+	  <parameter name="string" type="char*"/>
+	  <parameter name="length" type="int"/>
+	</parameters>
+      </method>
+      <method name="version" symbol="curl_version">
+	<return-type type="char*"/>
+      </method>
+      <method name="version_info" symbol="curl_version_info">
+	<return-type type="curl_version_info_data*"/>
+	<parameters>
+	  <parameter name="p1" type="CURLversion"/>
 	</parameters>
       </method>
       <method name="global_cleanup" symbol="curl_global_cleanup">
@@ -357,6 +367,8 @@
 	  <parameter name="c" type="curl_calloc_callback"/>
 	</parameters>
       </method>
+    </struct>
+    <struct name="CURLM">
       <method name="multi_add_handle" symbol="curl_multi_add_handle">
 	<return-type type="CURLMcode"/>
 	<parameters>
@@ -456,6 +468,13 @@
 	  <parameter name="milliseconds" type="long*"/>
 	</parameters>
       </method>
+    </struct>
+    <struct name="CURLMsg">
+      <field name="msg" type="CURLMSG"/>
+      <field name="easy_handle" type="CURL*"/>
+      <field name="data" type="gpointer"/>
+    </struct>
+    <struct name="CURLSH">
       <method name="share_cleanup" symbol="curl_share_cleanup">
 	<return-type type="CURLSHcode"/>
 	<parameters>
@@ -478,6 +497,8 @@
 	  <parameter name="p1" type="CURLSHcode"/>
 	</parameters>
       </method>
+    </struct>
+    <struct name="struct curl_slist">
       <method name="slist_append" symbol="curl_slist_append">
 	<return-type type="struct curl_slist*"/>
 	<parameters>
@@ -491,46 +512,29 @@
 	  <parameter name="p1" type="struct curl_slist*"/>
 	</parameters>
       </method>
-      <method name="strequal" symbol="curl_strequal">
+    </struct>
+    <struct name="struct curl_httppost">
+      <method name="formadd" symbol="curl_formadd">
+	<return-type type="CURLFORMcode"/>
+	<parameters>
+	  <parameter name="httppost" type="struct curl_httppost**"/>
+	  <parameter name="last_post" type="struct curl_httppost**"/>
+	</parameters>
+      </method>
+      <method name="formfree" symbol="curl_formfree">
+	<return-type type="void"/>
+	<parameters>
+	  <parameter name="form" type="struct curl_httppost*"/>
+	</parameters>
+      </method>
+      <method name="formget" symbol="curl_formget">
 	<return-type type="int"/>
 	<parameters>
-	  <parameter name="s1" type="char*"/>
-	  <parameter name="s2" type="char*"/>
+	  <parameter name="form" type="struct curl_httppost*"/>
+	  <parameter name="arg" type="void*"/>
+	  <parameter name="append" type="curl_formget_callback"/>
 	</parameters>
       </method>
-      <method name="strnequal" symbol="curl_strnequal">
-	<return-type type="int"/>
-	<parameters>
-	  <parameter name="s1" type="char*"/>
-	  <parameter name="s2" type="char*"/>
-	  <parameter name="n" type="size_t"/>
-	</parameters>
-      </method>
-      <method name="unescape" symbol="curl_unescape">
-	<return-type type="char*"/>
-	<parameters>
-	  <parameter name="string" type="char*"/>
-	  <parameter name="length" type="int"/>
-	</parameters>
-      </method>
-      <method name="version" symbol="curl_version">
-	<return-type type="char*"/>
-      </method>
-      <method name="version_info" symbol="curl_version_info">
-	<return-type type="curl_version_info_data*"/>
-	<parameters>
-	  <parameter name="p1" type="CURLversion"/>
-	</parameters>
-      </method>
-    </struct>
-    <struct name="CURLM">
-    </struct>
-    <struct name="CURLMsg">
-      <field name="msg" type="CURLMSG"/>
-      <field name="easy_handle" type="CURL*"/>
-      <field name="data" type="gpointer"/>
-    </struct>
-    <struct name="CURLSH">
     </struct>
     <struct name="curl_off_t">
     </struct>

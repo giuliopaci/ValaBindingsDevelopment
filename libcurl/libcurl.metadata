@@ -7,11 +7,14 @@ curl_easy_getinfo name="getinfo" printf_format=1 ellipsis=1
 curl_easy_init name="EasyHandle"
 curl_easy_perform name="perform"
 curl_easy_recv name="recv"
+curl_easy_recv.n is_out="1"
 curl_easy_reset name="reset"
 curl_easy_send name="send"
+curl_easy_send.n is_out="1"
 curl_easy_setopt name="setopt" printf_format=1 ellipsis=1
 curl_easy_strerror name="strerror"
 curl_easy_unescape name="unescape"
+curl_easy_unescape.outlength is_out="1"
 CURLM name="MultiHandle"
 CURLSH name="SharedHandle"
 CURLMsg name="Message"
@@ -48,7 +51,7 @@ CURLversion name="Version"
 CURLMSG name="Msg"
 curl_TimeCond name="TimeCond"
 CURLE_ALREADY_COMPLETE hidden=1
-CURLAUTH_DIGEST namespace_name="Auth"
+CURLAUTH_DIGEST namespace_name="Curl.Auth"
 CURLFTPSSL_NONE hidden=1
 CURLFTPSSL_TRY hidden=1
 CURLFTPSSL_CONTROL hidden=1
@@ -135,5 +138,7 @@ curl_ssl_ctx_callback name="SSLCtxCallback"
 curl_multi_timer_callback name="MultiTimerCallback"
 curl_unlock_function name="UnlockFunction"
 curl_lock_function name="LockFunction"
-curl_escape name="c_escape"
-curl_unescape name="c_unescape"
+curl_escape name="global_escape"
+curl_unescape name="global_unescape"
+global_init namespace_name="Global"  namespace="Global"
+curl_version_info_data VersionInfoData
