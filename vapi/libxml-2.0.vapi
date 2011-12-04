@@ -1807,9 +1807,76 @@ void	xmlNodeDumpOutput		(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, 
 	public delegate int SchemaValidityErrorFunc (void* context, string msg, ...);
 	[CCode (has_target = false, cname = "xmlSchemaValidityWarningFunc", cheader_filename = "libxml/xmlschemas.h")]
 	public delegate int SchemaValidityWarningFunc (void* context, string msg, ...);
-
+	[Compact]
+	[CCode (cname = "xmlSchemaAttribute", cheader_filename = "libxml/schemasInternals.h"]
+	 SchemaAttribute {
+			public SchemaTypeType	type;
+			private SchemaAttribute next;	: the next attribute (not used?)
+    public string name	: the name of the declaration
+    public string id	: Deprecated; not used
+    public string ref	: Deprecated; not used
+    public string refNs	: Deprecated; not used
+    public string typeName	: the local name of the type definition
+    public string typeNs	: the ns URI of the type definition
+    xmlSchemaAnnotPtr	annot
+    xmlSchemaTypePtr	base	: Deprecated; not used
+    int	occurs	: Deprecated; not used
+    public string defValue	: The initial value of the value constraint
+    xmlSchemaTypePtr	subtypes	: the type definition
+    xmlNodePtr	node
+    public string targetNamespace
+    int	flags
+    public string refPrefix	: Deprecated; not used
+    xmlSchemaValPtr	defVal	: The compiled value constraint
+    xmlSchemaAttributePtr	refDecl	: Deprecated; not used
+}
+	[Compact]
+	[CCode (cname = "xmlSchemaType", cheader_filename = "libxml/schemasInternals.h", free_function = "xmlSchemaFreeType" )]
+	public class SchemaType {
+		public SchemaTypeType type;
+		public string name;
+		public SchemaType	next; // the next type if in a sequence ...
+    // private string	id	: Deprecated; not used
+    // private string	ref	: Deprecated; not used
+    // private string	refNs	: Deprecated; not used
+		//xmlSchemaAnnotPtr	annot;
+		public SchemaType	subtypes;
+    // private xmlSchemaAttributePtr	attributes	: Deprecated; not used
+		public Node	node;
+    // private int	minOccurs	: Deprecated; not used
+    // private int	maxOccurs	: Deprecated; not used
+		public int	flags;
+		public SchemaContentType	contentType;
+		public string	base;  // Base type's local name
+		public string	baseNs; // Base type's target namespace
+		public SchemaType	baseType; // The base type component
+		//xmlSchemaFacetPtr	facets	: Local facets
+		private SchemaType	redef; // Deprecated; not used
+		private int	recurse; // Obsolete
+		//	xmlSchemaAttributeLinkPtr *	attributeUses; //	: Deprecated; not used
+		//xmlSchemaWildcardPtr	attributeWildcard;
+		public int	builtInType; // Type of built-in types.
+		//xmlSchemaTypeLinkPtr	memberTypes	: member-types if a union type.
+		//xmlSchemaFacetLinkPtr	facetSet	: All facets (incl. inherited)
+		private string	refPrefix; // Deprecated; not used
+		public SchemaType	contentTypeDef;	// Used for the simple content of complex types. Could we use @subtypes
+		//xmlRegexpPtr	contModel	: Holds the automaton of the content model
+		public string	targetNamespace;
+		public void*	attrUses;
+	}
+	[CCode (cname = "xmlSchemaContentType", cprefix = "XML_SCHEMA_CONTENT_", cheader_filename = "libxml/schemasInternals.h")]
+	public enum SchemaContentType {
+		UNKNOWN = 0,
+		EMPTY = 1,
+		ELEMENTS = 2,
+		MIXED = 3,
+		SIMPLE = 4,
+		MIXED_OR_ELEMENTS = 5, /* Obsolete */
+		BASIC = 6,
+		ANY = 7
+	}
 	[CCode (cname = "xmlSchemaTypeType", cprefix = "XML_SCHEMA_TYPE_", cheader_filename = "libxml/schemasInternals.h")]
-	public enum SchemaType {
+	public enum SchemaTypeType {
 		BASIC = 1, /* A built-in datatype */
 		ANY = 2,
 		FACET = 3,
@@ -1864,7 +1931,7 @@ void	xmlNodeDumpOutput		(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, 
 		EXTRA_QNAMEREF = 2000,
 		[CCode( cname = "XML_SCHEMA_EXTRA_ATTR_USE_PROHIB" )]
 		EXTRA_ATTR_USE_PROHIB = 2001
-}
+	}
 
 
 	[Compact]

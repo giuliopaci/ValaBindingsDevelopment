@@ -5,8 +5,8 @@ using Xml;
 
 static void tmp(void* a, void* b, string name)
 {
-	SchemaType* tmpp = (SchemaType*) a;
-	stderr.printf("%s %d\n", name, *tmpp);
+	unowned SchemaType tmpp = (SchemaType) a;
+	stderr.printf("%s %d %d\n", tmpp.name, tmpp.type, tmpp.contentType);
 }
 
 int main(string[] args) {
