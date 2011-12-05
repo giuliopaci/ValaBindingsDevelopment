@@ -14,6 +14,8 @@ namespace Curl {
 		[CCode (cname = "curl_easy_getinfo")]
 		[PrintfFormat]
 		public Curl.Code getinfo (Curl.Info info, ...);
+		[CCode (cname = "curl_easy_pause")]
+		public Curl.Code easy_pause (int bitmask);
 		[CCode (cname = "curl_easy_perform")]
 		public Curl.Code perform ();
 		[CCode (cname = "curl_easy_recv")]
@@ -64,7 +66,7 @@ namespace Curl {
 		[CCode (cname = "curl_multi_fdset")]
 		public Curl.MultiCode fdset (Posix.fd_set read_fd_set, Posix.fd_set write_fd_set, Posix.fd_set exc_fd_set, int max_fd);
 		[CCode (cname = "curl_multi_info_read")]
-		public unowned Curl.Message multi_info_read (int msgs_in_queue);
+		public unowned Curl.Message info_read (int msgs_in_queue);
 		[CCode (cname = "curl_multi_init")]
 		public MultiHandle();
 		[CCode (cname = "curl_multi_perform")]
@@ -91,13 +93,21 @@ namespace Curl {
 	[CCode (cheader_filename = "curl/curl.h", cname = "CURLSH", free_function = "curl_share_cleanup")]
 	[Compact]
 	public class SharedHandle {
-		public static Curl.SharedCode share_cleanup ();
+		[CCode (cname = "curl_share_cleanup")]
+		public Curl.SharedCode cleanup ();
 		[CCode (cname = "curl_share_init")]
 		public SharedHandle ();
 		[CCode (cname = "curl_share_setopt")]
 		public Curl.SharedCode setopt (Curl.SharedOption option);
 		[CCode (cname = "curl_share_strerror")]
 		public static unowned string strerror (Curl.SharedCode p1);
+	}
+	[CCode (cheader_filename = "curl/curl.h", cname = "CURLMsg")]
+	[Compact]
+	public class Message {
+		public Curl.Msg msg;
+		public weak Curl.EasyHandle easy_handle;
+		public void* data;
 	}
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_socket_t")]
 	[Compact]
@@ -129,7 +139,7 @@ namespace Curl {
 		[CCode (cname = "curl_formfree")]
 		public void free ();
 		[CCode (cname = "curl_formget")]
-		public static int get (void* arg, Curl.FormGetCallback append);
+		public int get (void* arg, Curl.FormGetCallback append);
 	}
 	[CCode (cheader_filename = "curl/curl.h", cname = "struct curl_slist", free_function = "slist_free_all")]
 	[Compact]
@@ -735,7 +745,7 @@ namespace Curl {
 		ALL,
 		LAST
 	}
-	[CCode (cheader_filename = "curl/curl.h", cname = "CURLversion", cprefix = "CURLVERSION_", cname = "CURLVersion", has_type_id = false)]
+	[CCode (cheader_filename = "curl/curl.h", cname = "CURLversion", cprefix = "CURLVERSION_", has_type_id = false)]
 	public enum Version {
 		FIRST,
 		SECOND,
@@ -748,6 +758,8 @@ namespace Curl {
 	}
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_calloc_callback", has_target = false)]
 	public delegate void* CallocCallback (size_t nmemb, size_t size);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_formget_callback", has_target = false)]
+	public delegate size_t FormGetCallback (void* arg, string buf, size_t len);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_free_callback", has_target = false)]
 	public delegate void FreeCallback (void* ptr);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_ioctl_callback", has_target = false)]
@@ -768,26 +780,260 @@ namespace Curl {
 	public delegate unowned string StrdupCallback (string str);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_write_callback", has_target = false)]
 	public delegate size_t WriteCallback (char* buffer, size_t size, size_t nitems, void* outstream);
-	[CCode (cname = "CURL_WRITEFUNC_PAUSE")]
+	[CCode (cname = "CURL_WRITEFUNC_PAUSE", cheader_filename = "curl/curl.h")]
 	public const size_t WRITEFUNC_PAUSE;
-	[CCode (cname = "CURL_READFUNC_ABORT")]
+	[CCode (cname = "CURL_READFUNC_ABORT", cheader_filename = "curl/curl.h")]
 	public const size_t READFUNC_ABORT;
-	[CCode (cname = "CURL_READFUNC_PAUSE")]
+	[CCode (cname = "CURL_READFUNC_PAUSE", cheader_filename = "curl/curl.h")]
 	public const size_t READFUNC_PAUSE;
-	[CCode (cname = "CURL_GLOBAL_ALL")]
+	[CCode (cname = "CURL_CHUNK_BGN_FUNC_SKIP", cheader_filename = "curl/curl.h")]
+	public const int CHUNK_BGN_FUNC_SKIP;
+	[CCode (cname = "CURL_CHUNK_END_FUNC_FAIL", cheader_filename = "curl/curl.h")]
+	public const int CHUNK_END_FUNC_FAIL;
+	[CCode (cname = "CURL_CHUNK_END_FUNC_OK", cheader_filename = "curl/curl.h")]
+	public const int CHUNK_END_FUNC_OK;
+	[CCode (cname = "CURL_CSELECT_ERR", cheader_filename = "curl/curl.h")]
+	public const int CSELECT_ERR;
+	[CCode (cname = "CURL_CSELECT_IN", cheader_filename = "curl/curl.h")]
+	public const int CSELECT_IN;
+	[CCode (cname = "CURL_CSELECT_OUT", cheader_filename = "curl/curl.h")]
+	public const int CSELECT_OUT;
+	[CCode (cname = "CURL_CURLAUTH_ANYSAFE", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_ANYSAFE;
+	[CCode (cname = "CURL_CURLAUTH_BASIC", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_BASIC;
+	[CCode (cname = "CURL_CURLAUTH_DIGEST", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_DIGEST;
+	[CCode (cname = "CURL_CURLAUTH_DIGEST_IE", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_DIGEST_IE;
+	[CCode (cname = "CURL_CURLAUTH_GSSNEGOTIATE", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_GSSNEGOTIATE;
+	[CCode (cname = "CURL_CURLAUTH_NONE", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_NONE;
+	[CCode (cname = "CURL_CURLAUTH_NTLM", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_NTLM;
+	[CCode (cname = "CURL_CURLAUTH_ONLY", cheader_filename = "curl/curl.h")]
+	public const int CURLAUTH_ONLY;
+	[CCode (cname = "CURL_CURLINFO_DOUBLE", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_DOUBLE;
+	[CCode (cname = "CURL_CURLINFO_LONG", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_LONG;
+	[CCode (cname = "CURL_CURLINFO_MASK", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_MASK;
+	[CCode (cname = "CURL_CURLINFO_SLIST", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_SLIST;
+	[CCode (cname = "CURL_CURLINFO_STRING", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_STRING;
+	[CCode (cname = "CURL_CURLINFO_TYPEMASK", cheader_filename = "curl/curl.h")]
+	public const int CURLINFO_TYPEMASK;
+	[CCode (cname = "CURL_CURLOPTTYPE_FUNCTIONPOINT", cheader_filename = "curl/curl.h")]
+	public const int CURLOPTTYPE_FUNCTIONPOINT;
+	[CCode (cname = "CURL_CURLOPTTYPE_LONG", cheader_filename = "curl/curl.h")]
+	public const int CURLOPTTYPE_LONG;
+	[CCode (cname = "CURL_CURLOPTTYPE_OBJECTPOINT", cheader_filename = "curl/curl.h")]
+	public const int CURLOPTTYPE_OBJECTPOINT;
+	[CCode (cname = "CURL_CURLOPTTYPE_OFF_T", cheader_filename = "curl/curl.h")]
+	public const int CURLOPTTYPE_OFF_T;
+	[CCode (cname = "CURL_CURLPAUSE_ALL", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_ALL;
+	[CCode (cname = "CURL_CURLPAUSE_CONT", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_CONT;
+	[CCode (cname = "CURL_CURLPAUSE_RECV", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_RECV;
+	[CCode (cname = "CURL_CURLPAUSE_RECV_CONT", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_RECV_CONT;
+	[CCode (cname = "CURL_CURLPAUSE_SEND", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_SEND;
+	[CCode (cname = "CURL_CURLPAUSE_SEND_CONT", cheader_filename = "curl/curl.h")]
+	public const int CURLPAUSE_SEND_CONT;
+	[CCode (cname = "CURL_CURLPROTO_ALL", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_ALL;
+	[CCode (cname = "CURL_CURLPROTO_DICT", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_DICT;
+	[CCode (cname = "CURL_CURLPROTO_FILE", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_FILE;
+	[CCode (cname = "CURL_CURLPROTO_FTP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_FTP;
+	[CCode (cname = "CURL_CURLPROTO_FTPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_FTPS;
+	[CCode (cname = "CURL_CURLPROTO_GOPHER", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_GOPHER;
+	[CCode (cname = "CURL_CURLPROTO_HTTP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_HTTP;
+	[CCode (cname = "CURL_CURLPROTO_HTTPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_HTTPS;
+	[CCode (cname = "CURL_CURLPROTO_IMAP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_IMAP;
+	[CCode (cname = "CURL_CURLPROTO_IMAPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_IMAPS;
+	[CCode (cname = "CURL_CURLPROTO_LDAP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_LDAP;
+	[CCode (cname = "CURL_CURLPROTO_LDAPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_LDAPS;
+	[CCode (cname = "CURL_CURLPROTO_POP3", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_POP3;
+	[CCode (cname = "CURL_CURLPROTO_POP3S", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_POP3S;
+	[CCode (cname = "CURL_CURLPROTO_RTMP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMP;
+	[CCode (cname = "CURL_CURLPROTO_RTMPE", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMPE;
+	[CCode (cname = "CURL_CURLPROTO_RTMPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMPS;
+	[CCode (cname = "CURL_CURLPROTO_RTMPT", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMPT;
+	[CCode (cname = "CURL_CURLPROTO_RTMPTE", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMPTE;
+	[CCode (cname = "CURL_CURLPROTO_RTMPTS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTMPTS;
+	[CCode (cname = "CURL_CURLPROTO_RTSP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_RTSP;
+	[CCode (cname = "CURL_CURLPROTO_SCP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_SCP;
+	[CCode (cname = "CURL_CURLPROTO_SFTP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_SFTP;
+	[CCode (cname = "CURL_CURLPROTO_SMTP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_SMTP;
+	[CCode (cname = "CURL_CURLPROTO_SMTPS", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_SMTPS;
+	[CCode (cname = "CURL_CURLPROTO_TELNET", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_TELNET;
+	[CCode (cname = "CURL_CURLPROTO_TFTP", cheader_filename = "curl/curl.h")]
+	public const int CURLPROTO_TFTP;
+	[CCode (cname = "CURL_CURLSSH_AUTH_ANY", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_ANY;
+	[CCode (cname = "CURL_CURLSSH_AUTH_HOST", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_HOST;
+	[CCode (cname = "CURL_CURLSSH_AUTH_KEYBOARD", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_KEYBOARD;
+	[CCode (cname = "CURL_CURLSSH_AUTH_NONE", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_NONE;
+	[CCode (cname = "CURL_CURLSSH_AUTH_PASSWORD", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_PASSWORD;
+	[CCode (cname = "CURL_CURLSSH_AUTH_PUBLICKEY", cheader_filename = "curl/curl.h")]
+	public const int CURLSSH_AUTH_PUBLICKEY;
+	[CCode (cname = "CURL_ERROR_SIZE", cheader_filename = "curl/curl.h")]
+	public const int ERROR_SIZE;
+	[CCode (cname = "CURL_FNMATCHFUNC_FAIL", cheader_filename = "curl/curl.h")]
+	public const int FNMATCHFUNC_FAIL;
+	[CCode (cname = "CURL_FNMATCHFUNC_MATCH", cheader_filename = "curl/curl.h")]
+	public const int FNMATCHFUNC_MATCH;
+	[CCode (cname = "CURL_FNMATCHFUNC_NOMATCH", cheader_filename = "curl/curl.h")]
+	public const int FNMATCHFUNC_NOMATCH;
+	[CCode (cname = "CURL_FORMAT_CURL_OFF_T", cheader_filename = "curl/curl.h")]
+	public const string FORMAT_CURL_OFF_T;
+	[CCode (cname = "CURL_FORMAT_CURL_OFF_TU", cheader_filename = "curl/curl.h")]
+	public const string FORMAT_CURL_OFF_TU;
+	[CCode (cname = "CURL_FORMAT_OFF_T", cheader_filename = "curl/curl.h")]
+	public const string FORMAT_OFF_T;
+	[CCode (cname = "CURL_GLOBAL_ALL", cheader_filename = "curl/curl.h")]
 	public const int GLOBAL_ALL;
-	[CCode (cname = "CURL_GLOBAL_DEFAULT")]
+	[CCode (cname = "CURL_GLOBAL_DEFAULT", cheader_filename = "curl/curl.h")]
 	public const int GLOBAL_DEFAULT;
-	[CCode (cname = "CURL_GLOBAL_NOTHING")]
+	[CCode (cname = "CURL_GLOBAL_NOTHING", cheader_filename = "curl/curl.h")]
 	public const int GLOBAL_NOTHING;
-	[CCode (cname = "CURL_GLOBAL_SSL")]
+	[CCode (cname = "CURL_GLOBAL_SSL", cheader_filename = "curl/curl.h")]
 	public const int GLOBAL_SSL;
-	[CCode (cname = "CURL_GLOBAL_WIN32")]
+	[CCode (cname = "CURL_GLOBAL_WIN32", cheader_filename = "curl/curl.h")]
 	public const int GLOBAL_WIN32;
-	[CCode (cheader_filename = "curl/curl.h", cname = "CURL_SEEKFUNC_CANTSEEK")]
+	[CCode (cname = "CURL_HTTPPOST_BUFFER", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_BUFFER;
+	[CCode (cname = "CURL_HTTPPOST_CALLBACK", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_CALLBACK;
+	[CCode (cname = "CURL_HTTPPOST_FILENAME", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_FILENAME;
+	[CCode (cname = "CURL_HTTPPOST_PTRBUFFER", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_PTRBUFFER;
+	[CCode (cname = "CURL_HTTPPOST_PTRCONTENTS", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_PTRCONTENTS;
+	[CCode (cname = "CURL_HTTPPOST_PTRNAME", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_PTRNAME;
+	[CCode (cname = "CURL_HTTPPOST_READFILE", cheader_filename = "curl/curl.h")]
+	public const int HTTPPOST_READFILE;
+	[CCode (cname = "CURL_IPRESOLVE_V4", cheader_filename = "curl/curl.h")]
+	public const int IPRESOLVE_V4;
+	[CCode (cname = "CURL_IPRESOLVE_V6", cheader_filename = "curl/curl.h")]
+	public const int IPRESOLVE_V6;
+	[CCode (cname = "CURL_IPRESOLVE_WHATEVER", cheader_filename = "curl/curl.h")]
+	public const int IPRESOLVE_WHATEVER;
+	[CCode (cname = "CURL_LIBCURL_COPYRIGHT", cheader_filename = "curl/curl.h")]
+	public const string LIBCURL_COPYRIGHT;
+	[CCode (cname = "CURL_LIBCURL_TIMESTAMP", cheader_filename = "curl/curl.h")]
+	public const string LIBCURL_TIMESTAMP;
+	[CCode (cname = "CURL_LIBCURL_VERSION", cheader_filename = "curl/curl.h")]
+	public const string LIBCURL_VERSION;
+	[CCode (cname = "CURL_LIBCURL_VERSION_MAJOR", cheader_filename = "curl/curl.h")]
+	public const int LIBCURL_VERSION_MAJOR;
+	[CCode (cname = "CURL_LIBCURL_VERSION_MINOR", cheader_filename = "curl/curl.h")]
+	public const int LIBCURL_VERSION_MINOR;
+	[CCode (cname = "CURL_LIBCURL_VERSION_NUM", cheader_filename = "curl/curl.h")]
+	public const int LIBCURL_VERSION_NUM;
+	[CCode (cname = "CURL_LIBCURL_VERSION_PATCH", cheader_filename = "curl/curl.h")]
+	public const int LIBCURL_VERSION_PATCH;
+	[CCode (cname = "CURL_POLL_IN", cheader_filename = "curl/curl.h")]
+	public const int POLL_IN;
+	[CCode (cname = "CURL_POLL_INOUT", cheader_filename = "curl/curl.h")]
+	public const int POLL_INOUT;
+	[CCode (cname = "CURL_POLL_NONE", cheader_filename = "curl/curl.h")]
+	public const int POLL_NONE;
+	[CCode (cname = "CURL_POLL_OUT", cheader_filename = "curl/curl.h")]
+	public const int POLL_OUT;
+	[CCode (cname = "CURL_POLL_REMOVE", cheader_filename = "curl/curl.h")]
+	public const int POLL_REMOVE;
+	[CCode (cname = "CURL_PULL_SYS_SOCKET_H", cheader_filename = "curl/curl.h")]
+	public const int PULL_SYS_SOCKET_H;
+	[CCode (cname = "CURL_PULL_SYS_TYPES_H", cheader_filename = "curl/curl.h")]
+	public const int PULL_SYS_TYPES_H;
+	[CCode (cname = "CURL_REDIR_GET_ALL", cheader_filename = "curl/curl.h")]
+	public const int REDIR_GET_ALL;
+	[CCode (cname = "CURL_REDIR_POST_301", cheader_filename = "curl/curl.h")]
+	public const int REDIR_POST_301;
+	[CCode (cname = "CURL_REDIR_POST_302", cheader_filename = "curl/curl.h")]
+	public const int REDIR_POST_302;
+	[CCode (cname = "CURL_REDIR_POST_ALL", cheader_filename = "curl/curl.h")]
+	public const int REDIR_POST_ALL;
+	[CCode (cname = "CURL_SEEKFUNC_CANTSEEK", cheader_filename = "curl/curl.h")]
 	public const int SEEKFUNC_CANTSEEK;
-	[CCode (cheader_filename = "curl/curl.h", cname = "CURL_SEEKFUNC_FAIL")]
+	[CCode (cname = "CURL_SEEKFUNC_FAIL", cheader_filename = "curl/curl.h")]
 	public const int SEEKFUNC_FAIL;
-	[CCode (cheader_filename = "curl/curl.h", cname = "CURL_SEEKFUNC_OK")]
+	[CCode (cname = "CURL_SEEKFUNC_OK", cheader_filename = "curl/curl.h")]
 	public const int SEEKFUNC_OK;
+	[CCode (cname = "CURL_SIZEOF_CURL_OFF_T", cheader_filename = "curl/curl.h")]
+	public const int SIZEOF_CURL_OFF_T;
+	[CCode (cname = "CURL_SIZEOF_CURL_SOCKLEN_T", cheader_filename = "curl/curl.h")]
+	public const int SIZEOF_CURL_SOCKLEN_T;
+	[CCode (cname = "CURL_SIZEOF_LONG", cheader_filename = "curl/curl.h")]
+	public const int SIZEOF_LONG;
+	[CCode (cname = "CURL_SOCKET_BAD", cheader_filename = "curl/curl.h")]
+	public const int SOCKET_BAD;
+	[CCode (cname = "CURL_VERSION_ASYNCHDNS", cheader_filename = "curl/curl.h")]
+	public const int VERSION_ASYNCHDNS;
+	[CCode (cname = "CURL_VERSION_CONV", cheader_filename = "curl/curl.h")]
+	public const int VERSION_CONV;
+	[CCode (cname = "CURL_VERSION_CURLDEBUG", cheader_filename = "curl/curl.h")]
+	public const int VERSION_CURLDEBUG;
+	[CCode (cname = "CURL_VERSION_DEBUG", cheader_filename = "curl/curl.h")]
+	public const int VERSION_DEBUG;
+	[CCode (cname = "CURL_VERSION_GSSNEGOTIATE", cheader_filename = "curl/curl.h")]
+	public const int VERSION_GSSNEGOTIATE;
+	[CCode (cname = "CURL_VERSION_IDN", cheader_filename = "curl/curl.h")]
+	public const int VERSION_IDN;
+	[CCode (cname = "CURL_VERSION_IPV6", cheader_filename = "curl/curl.h")]
+	public const int VERSION_IPV6;
+	[CCode (cname = "CURL_VERSION_KERBEROS4", cheader_filename = "curl/curl.h")]
+	public const int VERSION_KERBEROS4;
+	[CCode (cname = "CURL_VERSION_LARGEFILE", cheader_filename = "curl/curl.h")]
+	public const int VERSION_LARGEFILE;
+	[CCode (cname = "CURL_VERSION_LIBZ", cheader_filename = "curl/curl.h")]
+	public const int VERSION_LIBZ;
+	[CCode (cname = "CURL_VERSION_NTLM", cheader_filename = "curl/curl.h")]
+	public const int VERSION_NTLM;
+	[CCode (cname = "CURL_VERSION_SPNEGO", cheader_filename = "curl/curl.h")]
+	public const int VERSION_SPNEGO;
+	[CCode (cname = "CURL_VERSION_SSL", cheader_filename = "curl/curl.h")]
+	public const int VERSION_SSL;
+	[CCode (cname = "CURL_VERSION_SSPI", cheader_filename = "curl/curl.h")]
+	public const int VERSION_SSPI;
+	[CCode (cname = "CURL_VERSION_TLSAUTH_SRP", cheader_filename = "curl/curl.h")]
+	public const int VERSION_TLSAUTH_SRP;
 }
