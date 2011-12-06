@@ -758,26 +758,52 @@ namespace Curl {
 	}
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_calloc_callback", has_target = false)]
 	public delegate void* CallocCallback (size_t nmemb, size_t size);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_chunk_bgn_callback", has_target = false)]
+	public delegate long ChunkBeginCallback (void* transfer_info, void* ptr, int remains);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_chunk_end_callback", has_target = false)]
+	public delegate long ChunkEndCallback (void* ptr);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_closesocket_callback", has_target = false)]
+	public delegate int CloseSocketCallback (void* clientp, Curl.Socket item);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_conv_callback", has_target = false)]
+	public delegate Curl.Code ConvCallback (string buffer, size_t length);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_debug_callback", has_target = false)]
+	public delegate int DebugCallback (Curl.EasyHandle handle, Curl.InfoType type, string data, size_t size, void* userptr);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_fnmatch_callback", has_target = false)]
+	public delegate int FNMatchCallback (void* ptr, string pattern, string str);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_formget_callback", has_target = false)]
 	public delegate size_t FormGetCallback (void* arg, string buf, size_t len);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_free_callback", has_target = false)]
 	public delegate void FreeCallback (void* ptr);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_ioctl_callback", has_target = false)]
 	public delegate Curl.IOError IOCtlCallback (Curl.EasyHandle handle, int cmd, void* clientp);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_lock_function", has_target = false)]
+	public delegate void LockFunction (Curl.EasyHandle handle, Curl.LockData data, Curl.LockAccess locktype, void* userptr);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_malloc_callback", has_target = false)]
 	public delegate void* MallocCallback (size_t size);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_multi_timer_callback", has_target = false)]
+	public delegate int MultiTimerCallback (Curl.MultiHandle multi, long timeout_ms, void* userp);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_opensocket_callback", has_target = false)]
+	public delegate unowned Curl.Socket OpenSocketCallback (void* clientp, Curl.SocketType purpose, void* address);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_progress_callback", has_target = false)]
 	public delegate int ProgressCallback (void* clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_read_callback", has_target = false)]
 	public delegate size_t ReadCallback (char* buffer, size_t size, size_t nitems, void* instream);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_realloc_callback", has_target = false)]
 	public delegate void* ReallocCallback (void* ptr, size_t size);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_sshkeycallback", has_target = false)]
+	public delegate int SSHKeyCallback (Curl.EasyHandle easy, void* knownkey, void* foundkey, Curl.KeyHostMatch p4, void* clientp);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_ssl_ctx_callback", has_target = false)]
+	public delegate Curl.Code SSLCtxCallback (Curl.EasyHandle curl, void* ssl_ctx, void* userptr);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_seek_callback", has_target = false)]
 	public delegate int SeekCallback (void* instream, Curl.Offset offset, int origin);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_socket_callback", has_target = false)]
+	public delegate int SocketCallback (Curl.EasyHandle easy, Curl.Socket s, int what, void* userp, void* socketp);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_sockopt_callback", has_target = false)]
 	public delegate int SockoptCallback (void* clientp, Curl.Socket curlfd, Curl.SocketType purpose);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_strdup_callback", has_target = false)]
 	public delegate unowned string StrdupCallback (string str);
+	[CCode (cheader_filename = "curl/curl.h", cname = "curl_unlock_function", has_target = false)]
+	public delegate void UnlockFunction (Curl.EasyHandle handle, Curl.LockData data, void* userptr);
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_write_callback", has_target = false)]
 	public delegate size_t WriteCallback (char* buffer, size_t size, size_t nitems, void* outstream);
 	[CCode (cname = "CURL_WRITEFUNC_PAUSE", cheader_filename = "curl/curl.h")]
