@@ -1807,29 +1807,29 @@ void	xmlNodeDumpOutput		(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, 
 	public delegate int SchemaValidityErrorFunc (void* context, string msg, ...);
 	[CCode (has_target = false, cname = "xmlSchemaValidityWarningFunc", cheader_filename = "libxml/xmlschemas.h")]
 	public delegate int SchemaValidityWarningFunc (void* context, string msg, ...);
-	[Compact]
-	[CCode (cname = "xmlSchemaAttribute", cheader_filename = "libxml/schemasInternals.h"]
-	 SchemaAttribute {
-			public SchemaTypeType	type;
-			private SchemaAttribute next;	: the next attribute (not used?)
-    public string name	: the name of the declaration
-    public string id	: Deprecated; not used
-    public string ref	: Deprecated; not used
-    public string refNs	: Deprecated; not used
-    public string typeName	: the local name of the type definition
-    public string typeNs	: the ns URI of the type definition
-    xmlSchemaAnnotPtr	annot
-    xmlSchemaTypePtr	base	: Deprecated; not used
-    int	occurs	: Deprecated; not used
-    public string defValue	: The initial value of the value constraint
-    xmlSchemaTypePtr	subtypes	: the type definition
-    xmlNodePtr	node
-    public string targetNamespace
-    int	flags
-    public string refPrefix	: Deprecated; not used
-    xmlSchemaValPtr	defVal	: The compiled value constraint
-    xmlSchemaAttributePtr	refDecl	: Deprecated; not used
-}
+// 	[Compact]
+// 	[CCode (cname = "xmlSchemaAttribute", cheader_filename = "libxml/schemasInternals.h"]
+// 	 SchemaAttribute {
+// 			public SchemaTypeType	type;
+// 			private SchemaAttribute next;	: the next attribute (not used?)
+//     public string name	: the name of the declaration
+//     public string id	: Deprecated; not used
+//     public string ref	: Deprecated; not used
+//     public string refNs	: Deprecated; not used
+//     public string typeName	: the local name of the type definition
+//     public string typeNs	: the ns URI of the type definition
+//     xmlSchemaAnnotPtr	annot
+//     xmlSchemaTypePtr	base	: Deprecated; not used
+//     int	occurs	: Deprecated; not used
+//     public string defValue	: The initial value of the value constraint
+//     xmlSchemaTypePtr	subtypes	: the type definition
+//     xmlNodePtr	node
+//     public string targetNamespace
+//     int	flags
+//     public string refPrefix	: Deprecated; not used
+//     xmlSchemaValPtr	defVal	: The compiled value constraint
+//     xmlSchemaAttributePtr	refDecl	: Deprecated; not used
+// }
 	[Compact]
 	[CCode (cname = "xmlSchemaType", cheader_filename = "libxml/schemasInternals.h", free_function = "xmlSchemaFreeType" )]
 	public class SchemaType {

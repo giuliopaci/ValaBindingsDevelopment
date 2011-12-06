@@ -64,166 +64,8 @@ namespace Raptor {
 		public static void* calloc (size_t nmemb, size_t size);
 	}
 
-
-	public enum TermType {
-		UNKNOWN,
-		URI,
-		LITERAL,
-		BLANK
-	}
-
-	public enum Domain {
-		NONE,
-		IOSTREAM,
-		NAMESPACE,
-		PARSER,
-		QNAME,
-		SAX2,
-		SERIALIZER,
-		TERM,
-		TURTLE_WRITER,
-		URI,
-		WORLD,
-		WWW,
-		XML_WRITER,
-		LAST;
-		public string? get_label();
-	}
-
-	public enum LogLevel {
-		NONE,
-		TRACE,
-		DEBUG,
-		INFO,
-		WARN,
-		ERROR,
-		FATAL,
-		LAST;
-		public string? get_label();
-	}
-
-	public enum WorldFlag {
-		LIBXML_GENERIC_ERROR_SAVE,
-		LIBXML_STRUCTURED_ERROR_SAVE,
-		URI_INTERNING,
-		WWW_SKIP_INIT_FINISH;
-	}
-
-	[CCode (cname = "raptor_syntax_bitflags")]
-	public enum SyntaxFlag {
-		[CCode (cname = "RAPTOR_SYNTAX_NEED_BASE_URI")]
-		NEED_BASE_URI;
-	}
-
-	
-	[CCode (cname = "raptor_avltree_bitflags")]
-	public enum  AVLTreeFlag {
-		[CCode (cname = "RAPTOR_AVLTREE_FLAG_REPLACE_DUPLICATES")]
-		REPLACE_DUPLICATES;
-	}
-
-	public enum GraphMarkFlag {
-		START,
-		DECLARED;
-	}
-
-	[CCode (cname = "raptor_option")]
-	public enum Option {
-		SCANNING,
-		ALLOW_NON_NS_ATTRIBUTES,
-		ALLOW_OTHER_PARSETYPES,
-		ALLOW_BAGID,
-		ALLOW_RDF_TYPE_RDF_LIST,
-		NORMALIZE_LANGUAGE,
-		NON_NFC_FATAL,
-		WARN_OTHER_PARSETYPES,
-		CHECK_RDF_ID,
-		RELATIVE_URIS,
-		WRITER_AUTO_INDENT,
-		WRITER_AUTO_EMPTY,
-		WRITER_INDENT_WIDTH,
-		WRITER_XML_VERSION,
-		WRITER_XML_DECLARATION,
-		NO_NET,
-		RESOURCE_BORDER,
-		LITERAL_BORDER,
-		BNODE_BORDER,
-		RESOURCE_FILL,
-		LITERAL_FILL,
-		BNODE_FILL,
-		HTML_TAG_SOUP,
-		MICROFORMATS,
-		HTML_LINK,
-		WWW_TIMEOUT,
-		WRITE_BASE_URI,
-		WWW_HTTP_CACHE_CONTROL,
-		WWW_HTTP_USER_AGENT,
-		JSON_CALLBACK,
-		JSON_EXTRA_DATA,
-		RSS_TRIPLES,
-		ATOM_ENTRY_URI,
-		PREFIX_ELEMENTS,
-		STRICT,
-		WWW_CERT_FILENAME,
-		WWW_CERT_TYPE,
-		WWW_CERT_PASSPHRASE,
-		LAST;
-		public static uint get_count();
-	}
-
-	public enum OptionValueType{
-		BOOL,
-		INT,
-		STRING,
-		URI,
-		LAST;
-		[CCode (cname = "raptor_option_get_value_type_label")]
-		public string? get_label();
-	}
-
-	[CCode (cname = "raptor_statement_handler", has_target = false)]
-	public delegate void StatementHandler (void* user_data, Statement statement);
-
-	[CCode (cname = "raptor_namespace_handler", has_target = false)]
-	public delegate void NamespaceHandler (void* user_data, Namespace name);
-
-	[CCode (cname = "raptor_graph_mark_handler", has_target = false)]
-	public delegate void GraphMarkHandler (void* user_data, Uri? graph, int flags);
-
-	[CCode (cname = "raptor_log_handler", has_target = false)]
-	public delegate void LogHandler (void* user_data, LogMessage message);
-
-	[CCode (cname = "raptor_generate_bnodeid_handler", has_target = false)]
-	public delegate uchar* GenerateBnodeIdHandler (void* user_data, uchar* message);
-
-	[CCode (cname = "raptor_data_compare_handler", has_target = false, type = "int (*)(const void* , const void* )")]
-	public delegate int DataCompareHandler (void* data1, void* data2);
-
-	[CCode (cname = "raptor_data_free_handler", has_target = false)]
-	public delegate void DataFreeHandler (void* data);
-
-	[CCode (cname = "raptor_data_malloc_handler", has_target = false)]
-	public delegate void* DataMallocHandler (size_t size);
-
-	#if POSIX
-	[CCode (cname = "raptor_data_print_handler", has_target = false)]
-	public delegate int DataPrintHandler (void* object, Posix.FILE stream);
-	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
-	public delegate int DataContextPrintHandler (void* context, void* object, Posix.FILE stream);
-	#else
-	[CCode (cname = "raptor_data_print_handler", has_target = false)]
-	public delegate int DataPrintHandler (void* object, GLib.FileStream stream);
-	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
-	public delegate int DataContextPrintHandler (void* context, void* object, GLib.FileStream stream);
-	#endif
-
-	[CCode (cname = "raptor_data_cintext_free_handler", has_target = false)]
-	public delegate void DataContextFreeHandler (void* context, void* data);
-
-	// char *              raptor_vsnprintf                    (const char *message, va_list arguments);
-
+	[CCode (cheader_filename = "raptor2.h",  cname = "raptor_avltree", free_function = "raptor_free_avltree")]
 	[Compact]
-	[CCode (cname = "raptor_avltree", free_function = "raptor_free_avltree")]
 	public class AVLTree {
 		[CCode (cname = "raptor_new_avltree")]
 		public AVLTree(DataCompareHandler compare_handler, DataFreeHandler free_handler, uint flags);
@@ -253,8 +95,8 @@ namespace Raptor {
 		public delegate int VisitHandler (int depth, void* data, void* user_data);
 	}
 
-	[Compact]
 	[CCode (cname = "raptor_avltree_iterator", free_function = "raptor_free_avltree_iterator")]
+	[Compact]
 	public class AVLTreeIterator {
 		[CCode (cname = "raptor_new_avltree_iterator")]
 		public AVLTreeIterator (AVLTree tree, void* range, DataFreeHandler range_free_handler, int direction);
@@ -693,6 +535,14 @@ public void set_connection_timeout (int timeout);
 		public TermValue value;
 
 		[Compact]
+		[CCode (cname = "raptor_term_blank_value")]
+		public class Blank
+		{
+			public uchar* string;
+			public uint string_len;
+		}
+		[CCode (cheader_filename = "raptor2.h")]
+		[Compact]
 		[CCode (cname = "raptor_term_literal_value")]
 		public class Literal
 		{
@@ -703,14 +553,6 @@ public void set_connection_timeout (int timeout);
 
 			public uchar* language;
 			public uchar language_len;
-		}
-
-		[Compact]
-		[CCode (cname = "raptor_term_blank_value")]
-		public class Blank
-		{
-			public uchar* string;
-			public uint string_len;
 		}
 
 		public struct TermValue  {
@@ -885,5 +727,158 @@ public void set_connection_timeout (int timeout);
 // static char* uri_string_to_filename_fragment(string uri_string, unsigned char **fragment_p);
 // static bool uri_string_is_file_uri   (string uri_string);
 	}
-}
 
+	[CCode (cname = "raptor_avltree_bitflags", cprefix = "RAPTOR_AVLTREE_FLAG_")]
+	public enum AVLTreeFlag {
+		REPLACE_DUPLICATES
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_DOMAIN_", has_type_id = false)]
+	public enum Domain {
+		NONE,
+		IOSTREAM,
+		NAMESPACE,
+		PARSER,
+		QNAME,
+		SAX2,
+		SERIALIZER,
+		TERM,
+		TURTLE_WRITER,
+		URI,
+		WORLD,
+		WWW,
+		XML_WRITER,
+		LAST;
+		public string? get_label();
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_GRAPH_MARK_", has_type_id = false)]
+	public enum GraphMarkFlag {
+		START,
+		DECLARED
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_LOG_LEVEL_", has_type_id = false)]
+	public enum LogLevel {
+		NONE,
+		TRACE,
+		DEBUG,
+		INFO,
+		WARN,
+		ERROR,
+		FATAL,
+		LAST;
+		public string? get_label();
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_OPTION_", cname = "raptor_option", has_type_id = false)]
+	public enum Option {
+		SCANNING,
+		ALLOW_NON_NS_ATTRIBUTES,
+		ALLOW_OTHER_PARSETYPES,
+		ALLOW_BAGID,
+		ALLOW_RDF_TYPE_RDF_LIST,
+		NORMALIZE_LANGUAGE,
+		NON_NFC_FATAL,
+		WARN_OTHER_PARSETYPES,
+		CHECK_RDF_ID,
+		RELATIVE_URIS,
+		WRITER_AUTO_INDENT,
+		WRITER_AUTO_EMPTY,
+		WRITER_INDENT_WIDTH,
+		WRITER_XML_VERSION,
+		WRITER_XML_DECLARATION,
+		NO_NET,
+		RESOURCE_BORDER,
+		LITERAL_BORDER,
+		BNODE_BORDER,
+		RESOURCE_FILL,
+		LITERAL_FILL,
+		BNODE_FILL,
+		HTML_TAG_SOUP,
+		MICROFORMATS,
+		HTML_LINK,
+		WWW_TIMEOUT,
+		WRITE_BASE_URI,
+		WWW_HTTP_CACHE_CONTROL,
+		WWW_HTTP_USER_AGENT,
+		JSON_CALLBACK,
+		JSON_EXTRA_DATA,
+		RSS_TRIPLES,
+		ATOM_ENTRY_URI,
+		PREFIX_ELEMENTS,
+		STRICT,
+		WWW_CERT_FILENAME,
+		WWW_CERT_TYPE,
+		WWW_CERT_PASSPHRASE,
+		LAST;
+		public static uint get_count();
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_OPTION_VALUE_TYPE_", has_type_id = false)]
+	public enum OptionValueType {
+		BOOL,
+		INT,
+		STRING,
+		URI,
+		LAST;
+		[CCode (cname = "raptor_option_get_value_type_label")]
+		public string? get_label();
+	}
+
+	[CCode (cname = "raptor_syntax_bitflags", cprefix = "RAPTOR_SYNTAX_")]
+	public enum SyntaxFlag {
+		NEED_BASE_URI
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_TERM_TYPE_", has_type_id = false)]
+	public enum TermType {
+		UNKNOWN,
+		URI,
+		LITERAL,
+		BLANK
+	}
+	[CCode (cheader_filename = "raptor2.h", cprefix = "RAPTOR_WORLD_FLAG_", has_type_id = false)]
+	public enum WorldFlag {
+		LIBXML_GENERIC_ERROR_SAVE,
+		LIBXML_STRUCTURED_ERROR_SAVE,
+		URI_INTERNING,
+		WWW_SKIP_INIT_FINISH
+	}
+
+	[CCode (cname = "raptor_statement_handler", has_target = false)]
+	public delegate void StatementHandler (void* user_data, Statement statement);
+
+	[CCode (cname = "raptor_namespace_handler", has_target = false)]
+	public delegate void NamespaceHandler (void* user_data, Namespace name);
+
+	[CCode (cname = "raptor_graph_mark_handler", has_target = false)]
+	public delegate void GraphMarkHandler (void* user_data, Uri? graph, int flags);
+
+	[CCode (cname = "raptor_log_handler", has_target = false)]
+	public delegate void LogHandler (void* user_data, LogMessage message);
+
+	[CCode (cname = "raptor_generate_bnodeid_handler", has_target = false)]
+	public delegate uchar* GenerateBnodeIdHandler (void* user_data, uchar* message);
+
+	[CCode (cname = "raptor_data_compare_handler", has_target = false, type = "int (*)(const void* , const void* )")]
+	public delegate int DataCompareHandler (void* data1, void* data2);
+
+	[CCode (cname = "raptor_data_free_handler", has_target = false)]
+	public delegate void DataFreeHandler (void* data);
+
+	[CCode (cname = "raptor_data_malloc_handler", has_target = false)]
+	public delegate void* DataMallocHandler (size_t size);
+
+	#if POSIX
+	[CCode (cname = "raptor_data_print_handler", has_target = false)]
+	public delegate int DataPrintHandler (void* object, Posix.FILE stream);
+	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
+	public delegate int DataContextPrintHandler (void* context, void* object, Posix.FILE stream);
+	#else
+	[CCode (cname = "raptor_data_print_handler", has_target = false)]
+	public delegate int DataPrintHandler (void* object, GLib.FileStream stream);
+	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
+	public delegate int DataContextPrintHandler (void* context, void* object, GLib.FileStream stream);
+	#endif
+
+	[CCode (cname = "raptor_data_context_free_handler", has_target = false)]
+	public delegate void DataContextFreeHandler (void* context, void* data);
+
+	// char *              raptor_vsnprintf                    (const char *message, va_list arguments);
+
+}
