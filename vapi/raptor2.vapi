@@ -20,6 +20,14 @@
  * 	Giulio Paci <giuliopaci@interfree.it>
  */
 
+namespace Memory {
+		[CCode (cheader_filename = "raptor2.h", cname = "raptor_alloc_memory")]
+		public static void* alloc (size_t size);
+		[CCode (cheader_filename = "raptor2.h", cname = "raptor_calloc_memory")]
+		public static void* calloc (size_t nmemb, size_t size);
+		[CCode (cheader_filename = "raptor2.h", cname = "raptor_free_memory")]
+		public static void free (void* ptr);
+}
 
 [CCode (cheader_filename = "raptor2.h")]
 namespace Raptor {
@@ -53,16 +61,6 @@ namespace Raptor {
 
 	// extern              const uint raptor_rdf_namespace_uri_len;
 	// extern              const uint raptor_xml_literal_datatype_uri_string_len;
-
-	namespace Memory
-	{
-		[CCode (cname = "raptor_free_memory")]
-		public static void free (void* ptr);
-		[CCode (cname = "raptor_alloc_memory")]
-		public static void* alloc (size_t size);
-		[CCode (cname = "raptor_calloc_memory")]
-		public static void* calloc (size_t nmemb, size_t size);
-	}
 
 	[CCode (cheader_filename = "raptor2.h",  cname = "raptor_avltree", free_function = "raptor_free_avltree")]
 	[Compact]
@@ -108,8 +106,8 @@ namespace Raptor {
 		public bool next ();
 	}
 
-	[Compact]
 	[CCode (cname = "raptor_sequence", free_function = "raptor_free_sequence")]
+	[Compact]
 	public class Sequence {
 		[CCode (cname = "raptor_new_sequence")]
 		public Sequence (DataFreeHandler free_handler, DataPrintHandler print_handler);
@@ -145,8 +143,8 @@ namespace Raptor {
 	}
 
 
-	[Compact]
 	[CCode (cname = "raptor_serializer", free_function = "raptor_free_serializer")]
+	[Compact]
 	public class Serializer {
 		public Serializer (World world, string name);
 		public int start_to_iostream (Uri uri, IOStream iostream);
@@ -174,8 +172,8 @@ namespace Raptor {
 
 
 
-	[Compact]
 	[CCode (cname = "raptor_stringbuffer", free_function = "raptor_free_stringbuffer")]
+	[Compact]
 	public class StringBuffer {
 		public StringBuffer();
 		public int append_counted_string (uchar* string, size_t length, int do_copy);
@@ -193,8 +191,8 @@ namespace Raptor {
 	}
 
 
-	[Compact]
 	[CCode (cname = "raptor_unichar")]
+	[Compact]
 	public class UniChar {
 // int raptor_unicode_utf8_string_put_char (raptor_unichar c, unsigned char *output, size_t length);
 // int raptor_unicode_utf8_string_get_char (const unsigned char *input, size_t length, raptor_unichar *output);
@@ -211,8 +209,8 @@ namespace Raptor {
 
 
 
-	[Compact]
 	[CCode (cname = "raptor_sax2")]
+	[Compact]
 	public class Sax2 {
 // raptor_sax2 *       raptor_new_sax2                     (raptor_world *world, raptor_locator *locator, void* user_data);
 // void                raptor_free_sax2                    (raptor_sax2 *sax2);
@@ -541,9 +539,9 @@ public void set_connection_timeout (int timeout);
 			public uchar* string;
 			public uint string_len;
 		}
-		[CCode (cheader_filename = "raptor2.h")]
+
 		[Compact]
-		[CCode (cname = "raptor_term_literal_value")]
+		[CCode (cheader_filename = "raptor2.h", cname = "raptor_term_literal_value")]
 		public class Literal
 		{
 			public uchar* string;
@@ -728,7 +726,7 @@ public void set_connection_timeout (int timeout);
 // static bool uri_string_is_file_uri   (string uri_string);
 	}
 
-	[CCode (cname = "raptor_avltree_bitflags", cprefix = "RAPTOR_AVLTREE_FLAG_")]
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_avltree_bitflags", cprefix = "RAPTOR_AVLTREE_FLAG_")]
 	public enum AVLTreeFlag {
 		REPLACE_DUPLICATES
 	}
@@ -821,7 +819,7 @@ public void set_connection_timeout (int timeout);
 		public string? get_label();
 	}
 
-	[CCode (cname = "raptor_syntax_bitflags", cprefix = "RAPTOR_SYNTAX_")]
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_syntax_bitflags", cprefix = "RAPTOR_SYNTAX_", has_type_id = false)]
 	public enum SyntaxFlag {
 		NEED_BASE_URI
 	}
@@ -839,6 +837,29 @@ public void set_connection_timeout (int timeout);
 		URI_INTERNING,
 		WWW_SKIP_INIT_FINISH
 	}
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_data_compare_handler", has_target = false, type = "int (*)(const void* , const void* )")]
+	public delegate int DataCompareHandler (void* data1, void* data2);
+
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_data_context_free_handler", has_target = false)]
+	public delegate void DataContextFreeHandler (void* context, void* object);
+
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_data_free_handler", has_target = false)]
+	public delegate void DataFreeHandler (void* data);
+
+	[CCode (cheader_filename = "raptor2.h", cname = "raptor_data_malloc_handler", has_target = false)]
+	public delegate void* DataMallocHandler (size_t size);
+
+	#if POSIX
+	[CCode (cname = "raptor_data_print_handler", has_target = false)]
+	public delegate int DataPrintHandler (void* object, Posix.FILE stream);
+	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
+	public delegate int DataContextPrintHandler (void* context, void* object, Posix.FILE stream);
+	#else
+	[CCode (cname = "raptor_data_print_handler", has_target = false)]
+	public delegate int DataPrintHandler (void* object, GLib.FileStream stream);
+	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
+	public delegate int DataContextPrintHandler (void* context, void* object, GLib.FileStream stream);
+	#endif
 
 	[CCode (cname = "raptor_statement_handler", has_target = false)]
 	public delegate void StatementHandler (void* user_data, Statement statement);
@@ -855,29 +876,6 @@ public void set_connection_timeout (int timeout);
 	[CCode (cname = "raptor_generate_bnodeid_handler", has_target = false)]
 	public delegate uchar* GenerateBnodeIdHandler (void* user_data, uchar* message);
 
-	[CCode (cname = "raptor_data_compare_handler", has_target = false, type = "int (*)(const void* , const void* )")]
-	public delegate int DataCompareHandler (void* data1, void* data2);
-
-	[CCode (cname = "raptor_data_free_handler", has_target = false)]
-	public delegate void DataFreeHandler (void* data);
-
-	[CCode (cname = "raptor_data_malloc_handler", has_target = false)]
-	public delegate void* DataMallocHandler (size_t size);
-
-	#if POSIX
-	[CCode (cname = "raptor_data_print_handler", has_target = false)]
-	public delegate int DataPrintHandler (void* object, Posix.FILE stream);
-	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
-	public delegate int DataContextPrintHandler (void* context, void* object, Posix.FILE stream);
-	#else
-	[CCode (cname = "raptor_data_print_handler", has_target = false)]
-	public delegate int DataPrintHandler (void* object, GLib.FileStream stream);
-	[CCode (cname = "raptor_data_context_print_handler", has_target = false)]
-	public delegate int DataContextPrintHandler (void* context, void* object, GLib.FileStream stream);
-	#endif
-
-	[CCode (cname = "raptor_data_context_free_handler", has_target = false)]
-	public delegate void DataContextFreeHandler (void* context, void* data);
 
 	// char *              raptor_vsnprintf                    (const char *message, va_list arguments);
 
