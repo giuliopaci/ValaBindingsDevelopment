@@ -1,4 +1,4 @@
-/* valac --pkg libmicrohttpd --vapidir vapi --save-temps */
+/* valac --pkg libmicrohttpd --vapidir private-vapi --save-temps */
 using MHD;
 int print_out_key(void* cls, MHD.ValueKind kind, string? key, string? value)
 {
