@@ -2000,7 +2000,7 @@ void	xmlNodeDumpOutput		(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, 
 
 //		[CCode (cname = "xmlSchemaSAXPlug")]
 //		xmlSchemaSAXPlugPtr	xmlSchemaSAXPlug	(xmlSAXHandlerPtr * sax, void ** user_data);
-		[CCode (cname = "xmlSchemaValidateStream")]
+//		[CCode (cname = "xmlSchemaValidateStream")]
 //		public int	validate_stream		(ParserInput xmlParserInputBufferPtr input, CharEncoding enc, SAXHandler sax, void * user_data);
 		[CCode (cname = "xmlSchemaValidateOneElement")]
 		public int	validate_one_element	(Node elem);
