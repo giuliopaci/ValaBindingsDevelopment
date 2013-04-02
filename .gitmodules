@@ -1,0 +1,3 @@
+[submodule "vapi"]
+	path = vapi
+	url = git://github.com/giuliopaci/vala-extra-vapis.git
