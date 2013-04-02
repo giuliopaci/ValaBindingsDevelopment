@@ -1,4 +1,4 @@
-/* valac --pkg libxml-2.0 --vapidir vapi --save-temps */
+/* valac --pkg libxml-2.0 --vapidir private-vapi --save-temps */
 
 using Xml;
 
