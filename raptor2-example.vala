@@ -1,4 +1,4 @@
-/* valac --pkg raptor2 --vapidir vapi --save-temps */
+/* valac --pkg raptor2 --vapidir private-vapi --save-temps */
 
 using Raptor;
 
