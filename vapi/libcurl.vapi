@@ -107,7 +107,16 @@ namespace Curl {
 	public class Message {
 		public Curl.Msg msg;
 		public weak Curl.EasyHandle easy_handle;
-		public void* data;
+		
+		[CCode (cheader_filename = "curl/curl.h", cname = "union data")]
+		[Compact]
+		public struct Data
+			{
+				[CCode (cheader_filename = "curl/curl.h", cname = "whatever")]
+				public void* whatever;
+				[CCode (cheader_filename = "curl/curl.h", cname = "result")]
+				public Curl.Code result;
+			}
 	}
 	[CCode (cheader_filename = "curl/curl.h", cname = "curl_socket_t")]
 	[Compact]
