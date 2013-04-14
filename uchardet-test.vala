@@ -1,3 +1,4 @@
+/* valac --pkg uchardet --vapidir vapi --save-temps */
 using UcharDet;
 
 int main(string[] args)
