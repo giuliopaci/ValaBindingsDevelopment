@@ -20,7 +20,7 @@ int main(string[] args)
 				}
 			}
 		}
-		int ret = class.handle_data(tmpbuffer, tmpbuffer_length);
+		int ret = class.handle_data(tmpbuffer);
 		if( ret >= 0 )
 		{
 			tmpbuffer_length = fs.read(tmpbuffer);
